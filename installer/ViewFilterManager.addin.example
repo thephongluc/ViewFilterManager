@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns><AddIn Type="Application">
- <Name>TPT View Filter Manager</Name>
- <Assembly>C:\REPLACE_WITH_INSTALL_PATH\TPTViewFilterManager.dll</Assembly>
+ <Name>View Filter Manager</Name>
+ <Assembly>C:\REPLACE_WITH_INSTALL_PATH\ViewFilterManager.Addin.dll</Assembly>
  <AddInId>C5B839AD-C5B7-4C67-A0FA-9F843AE927B3</AddInId>
  <FullClassName>ViewFilterManager.Addin.Application</FullClassName>
- <VendorId>TPVF</VendorId><VendorDescription>Standalone View Filter Manager</VendorDescription>
+ <VendorId>TPVF</VendorId><VendorDescription>View Filter Manager</VendorDescription>
 </AddIn></RevitAddIns>

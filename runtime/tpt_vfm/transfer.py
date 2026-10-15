@@ -192,7 +192,7 @@ def copy_template(source, destination, template, policy, cache=None):
 
 
 def execute(source, destination, plan, policy):
-    group = DB.TransactionGroup(destination, 'TPT View Filter Manager - transfer')
+    group = DB.TransactionGroup(destination, 'View Filter Manager - transfer')
     group.Start()
     result = []
     cache = {}

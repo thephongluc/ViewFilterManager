@@ -17,9 +17,9 @@ OutputBaseFilename=ViewFilterManager-{#AppVersion}-Installer-Test
 AppId={{EF9954D7-1DE6-4EE0-BEF4-B88DBB2F16D7}
 OutputBaseFilename=ViewFilterManager-{#AppVersion}-Revit2026-Setup
 #endif
-AppName=TPT View Filter Manager for Revit 2026
+AppName=View Filter Manager
 AppVersion={#AppVersion}
-AppPublisher=TPT
+AppPublisher=View Filter Manager
 AppPublisherURL=https://github.com/thephongluc/ViewFilterManager
 AppSupportURL=https://github.com/thephongluc/ViewFilterManager/issues
 AppUpdatesURL=https://github.com/thephongluc/ViewFilterManager/releases
@@ -32,13 +32,15 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
 WizardStyle=modern
+SetupIconFile=..\runtime\icon.ico
+UninstallDisplayIcon={code:GetBootstrapDir}\Content\icon.ico
 SetupLogging=yes
 OutputDir={#OutputPath}
 Compression=lzma2
 SolidCompression=yes
 CloseApplications=no
 RestartApplications=no
-UninstallDisplayName=TPT View Filter Manager for Revit 2026
+UninstallDisplayName=View Filter Manager
 UninstallFilesDir={app}\Setup
 VersionInfoVersion={#AppVersion}.0
 InfoBeforeFile=Before-install.txt
@@ -161,12 +163,12 @@ begin
   if CompareVersions(String(Previous), '{#AppVersion}') > 0 then begin
    Result := 'A newer version is installed. Uninstall it before installing an older version.'; exit;
   end;
- AssemblyPath := GetBootstrapDir('') + '\TPTViewFilterManager.dll';
+ AssemblyPath := GetBootstrapDir('') + '\ViewFilterManager.Addin.dll';
  Manifest := '<?xml version="1.0" encoding="utf-8"?>' + #13#10 +
- '<RevitAddIns><AddIn Type="Application"><Name>TPT View Filter Manager</Name><Assembly>' + XmlEscape(AssemblyPath) +
+ '<RevitAddIns><AddIn Type="Application"><Name>View Filter Manager</Name><Assembly>' + XmlEscape(AssemblyPath) +
  '</Assembly><AddInId>C5B839AD-C5B7-4C67-A0FA-9F843AE927B3</AddInId>' +
  '<FullClassName>ViewFilterManager.Addin.Application</FullClassName><VendorId>TPVF</VendorId>' +
- '<VendorDescription>Standalone View Filter Manager</VendorDescription></AddIn></RevitAddIns>';
+ '<VendorDescription>View Filter Manager</VendorDescription></AddIn></RevitAddIns>';
  SetArrayLength(Lines, 1); Lines[0] := Manifest;
  if not SaveStringsToUTF8File(ExpandConstant('{tmp}\ViewFilterManager.addin'), Lines, False) then begin
   Result := 'Unable to prepare the Revit registration file.'; exit;

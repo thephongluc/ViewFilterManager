@@ -194,7 +194,7 @@ def transaction(doc, title, action):
 def copy_filters(doc, source, plan, mode, groups):
     _, source_data = snapshot(source)
     results = []
-    group = DB.TransactionGroup(doc, 'TPT View Filter Manager - copy')
+    group = DB.TransactionGroup(doc, 'View Filter Manager - copy')
     group.Start()
     try:
         for item in plan:
@@ -250,7 +250,7 @@ def usage(doc):
 
 def remove_from_views(doc, filter_ids, views):
     rows = []
-    group = DB.TransactionGroup(doc, 'TPT View Filter Manager - remove')
+    group = DB.TransactionGroup(doc, 'View Filter Manager - remove')
     group.Start()
     try:
         for view in views:
@@ -287,7 +287,7 @@ def delete_unused(doc, filter_ids):
         deleted = set(eid(x) for x in doc.Delete(ids([x.Id for x in chosen])))
         if deleted - expected:
             raise ValueError('Revit would delete dependent elements. The entire deletion was rolled back.')
-    transaction(doc, 'TPT View Filter Manager - purge unused', delete)
+    transaction(doc, 'View Filter Manager - purge unused', delete)
 
 
 def unique_name(doc, proposed):
@@ -314,7 +314,7 @@ def duplicate_filter(doc, source, proposed):
             new.SetElementIds(source.GetElementIds())
             return new
         raise ValueError('Unsupported filter type.')
-    return transaction(doc, 'TPT View Filter Manager - duplicate', duplicate)
+    return transaction(doc, 'View Filter Manager - duplicate', duplicate)
 
 
 def value_json(value):
@@ -391,12 +391,12 @@ def batch_rename(doc, rows):
             raise ValueError('Batch rename blocked:\n' + '\n'.join(errors[key] for key in sorted(errors)))
         occupied = list(inventory.values()) + [row['proposed'] for row in changes]
         for row in changes:
-            temporary = 'TPT_Rename_' + uuid.uuid4().hex
+            temporary = 'VFM_Rename_' + uuid.uuid4().hex
             while any(DB.NamingUtils.CompareNames(temporary, value) == 0 for value in occupied):
-                temporary = 'TPT_Rename_' + uuid.uuid4().hex
+                temporary = 'VFM_Rename_' + uuid.uuid4().hex
             elements[row['id']].Name = temporary
             occupied.append(temporary)
         for row in changes:
             elements[row['id']].Name = row['proposed']
         return len(changes)
-    return transaction(doc, 'TPT View Filter Manager - batch rename', apply)
+    return transaction(doc, 'View Filter Manager - batch rename', apply)

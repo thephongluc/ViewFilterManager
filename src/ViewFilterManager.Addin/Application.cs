@@ -22,11 +22,19 @@ public sealed class Application : IExternalApplication
         button.AvailabilityClassName = typeof(ProjectAvailability).FullName;
         button.ToolTip = "View Filter Manager " + typeof(Application).Assembly.GetName().Version!.ToString(3) +
                          " — copy, order, edit, rename and transfer view filters.";
-        var icon = Path.Combine(Installation.Root, "Content", "icon.png");
-        if (File.Exists(icon)) { var image = new BitmapImage(new Uri(icon)); image.Freeze(); button.LargeImage = image; button.Image = image; }
+        var content = Path.Combine(Installation.Root, "Content");
+        button.LargeImage = LoadIcon(Path.Combine(content, "icon32.png"));
+        button.Image = LoadIcon(Path.Combine(content, "icon16.png"));
         return Result.Succeeded;
     }
     public Result OnShutdown(UIControlledApplication app) => Result.Succeeded;
+
+    private static BitmapImage LoadIcon(string path)
+    {
+        var image = new BitmapImage(); image.BeginInit();
+        image.CacheOption = BitmapCacheOption.OnLoad; image.UriSource = new Uri(path);
+        image.EndInit(); image.Freeze(); return image;
+    }
 }
 
 public sealed class ProjectAvailability : IExternalCommandAvailability

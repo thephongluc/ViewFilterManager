@@ -1,3 +1,10 @@
+# Release 2.0.3 verification — 2026-10-15
+
+- Visible installer, load-prompt registration, main window and auxiliary dialog names use View Filter Manager; the startup DLL is ViewFilterManager.Addin.dll.
+- Original installer/AddIn IDs and existing internal storage location are retained for upgrade/uninstall continuity.
+- Rounded monochrome funnel/magnifier source SVG, transparent 16/32/64/256 px PNGs and multi-resolution Windows ICO are supplied. WPF windows load the new icon; installer and installed-app entry use the ICO.
+- Automated build, WPF and installer checks are run for this release. Revit's unsigned load prompt and the ribbon/window appearance require visual acceptance after restart.
+
 # Release 2.0.2 verification — 2026-10-15
 
 - The complete startup DLL, runtime, dependencies and Content now install together in the standard Revit add-ins version folder. New installations have no runtime pointer.

@@ -311,4 +311,4 @@ def save_filter(doc, existing, proposed, categories, tree):
         if element_filter is not None:
             target.SetElementFilter(element_filter)
         return target
-    return api.transaction(doc, 'TPT View Filter Manager - edit rules', save)
+    return api.transaction(doc, 'View Filter Manager - edit rules', save)

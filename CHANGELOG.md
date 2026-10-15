@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.3 — 2026-10-15
+
+- Use View Filter Manager for installer, installed-app entry, Revit load-prompt name, dialog titles and Undo labels.
+- Add a monochrome rounded filter-and-magnifier icon, with dedicated ribbon sizes, window icon and installer icon.
+- Rename the startup assembly to ViewFilterManager.Addin.dll; preserve stable installation IDs for upgrades.
+
 ## 2.0.2 — 2026-10-15
 
 - Move the standalone command to its own View Filter Manager ribbon tab, separate from TPT and pyRevit.

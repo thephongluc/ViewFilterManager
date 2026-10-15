@@ -12,7 +12,7 @@ from System.Windows.Input import Keyboard, ModifierKeys
 from System import Object
 from . import api, rules, transfer, selection, renaming, __version__
 
-TITLE = 'TPT View Filter Manager'
+TITLE = 'View Filter Manager'
 KINDS = ['Views / templates', 'Views only', 'Templates only']
 PLACEMENTS = ['Stack selected at end', 'Keep position of common filters', 'Start at position']
 PLACEMENT_KEYS = ['stacked', 'anchors', 'position']
@@ -148,7 +148,7 @@ class ManagerWindow(forms.WPFWindow):
         self._filter_order, self._imported_names = [], []
         self._library_scope, self._types_initialized = 0, False
         forms.WPFWindow.__init__(self, os.path.join(bundle, 'manager.xaml'))
-        self.Title = 'View Filter Manager ' + __version__ + ' | TPT Standalone'
+        self.Title = TITLE
         self.source_kind.ItemsSource = self.dest_kind.ItemsSource = KINDS
         self.source_kind.SelectedIndex = self.dest_kind.SelectedIndex = 0
         self.placement.ItemsSource = PLACEMENTS
@@ -402,7 +402,7 @@ class ManagerWindow(forms.WPFWindow):
                 'filter_destinations': bool(self.dest_by_filter.IsChecked),
                 'pairs': [(api.name(self.doc.GetElement(DB.ElementId(n.FilterId))), n.Value.UniqueId)
                           for n in selection.walk(self.dest_views.Items) if n.Value is not None and n.IsChecked is True and getattr(n, 'FilterId', None) is not None]}
-        path = forms.save_file(file_ext='json', default_name='TPT-filter-preset.json')
+        path = forms.save_file(file_ext='json', default_name='ViewFilterManager-preset.json')
         if path:
             with io.open(path, 'w', encoding='utf-8') as stream: stream.write(api.text_type(json.dumps(data, ensure_ascii=False, indent=2)))
 
@@ -603,7 +603,7 @@ class ManagerWindow(forms.WPFWindow):
         proposed = forms.ask_for_string(default=api.name(f), prompt='New filter name', title=TITLE)
         if proposed and proposed.strip():
             api.ensure_writable(self.doc)
-            api.transaction(self.doc, 'TPT View Filter Manager - rename', lambda: setattr(f, 'Name', proposed.strip()))
+            api.transaction(self.doc, 'View Filter Manager - rename', lambda: setattr(f, 'Name', proposed.strip()))
             self.refresh()
 
     @guard
@@ -628,7 +628,7 @@ class ManagerWindow(forms.WPFWindow):
         if any(self.doc.GetElement(x) is None for x in values):
             raise ValueError('An entered element ID does not exist in this project.')
         api.ensure_writable(self.doc)
-        api.transaction(self.doc, 'TPT View Filter Manager - selection members', lambda: f.SetElementIds(api.ids(values)))
+        api.transaction(self.doc, 'View Filter Manager - selection members', lambda: f.SetElementIds(api.ids(values)))
         self.refresh()
 
     @guard
@@ -662,7 +662,7 @@ class ManagerWindow(forms.WPFWindow):
             self.status_label.Text = '{0} unused filter definitions deleted.'.format(len(selected))
 
     def export(self, extension):
-        path = forms.save_file(file_ext=extension, default_name='TPT-view-filters.' + extension)
+        path = forms.save_file(file_ext=extension, default_name='ViewFilterManager-filters.' + extension)
         if path:
             count = api.export_library(self.doc, path)
             self.status_label.Text = 'Exported {0} filters to {1}'.format(count, path)
@@ -677,7 +677,7 @@ class ManagerWindow(forms.WPFWindow):
 
     @guard
     def save_report_click(self, sender, args):
-        path = forms.save_file(file_ext='txt', default_name='TPT-filter-report.txt')
+        path = forms.save_file(file_ext='txt', default_name='ViewFilterManager-report.txt')
         if path:
             with io.open(path, 'w', encoding='utf-8') as stream:
                 stream.write(api.text_type(self.last_report + ('\n\nLast error details:\n' + self.last_error if self.last_error else '')))

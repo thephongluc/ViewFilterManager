@@ -25,8 +25,9 @@ Remove-Item -LiteralPath $manifestPath
 $null = Invoke-Checked $installer ($baseArguments + ' /LOG="' + (Join-Path $TestRoot 'install.log') + '"')
 $installed = Join-Path $TestRoot ('Addins\ViewFilterManager\Versions\' + $version)
 $manifest = [xml](Get-Content -LiteralPath $manifestPath -Raw)
+if ($manifest.RevitAddIns.AddIn.Name -ne 'View Filter Manager' -or $manifest.RevitAddIns.AddIn.VendorDescription -ne 'View Filter Manager') { throw 'Incorrect visible add-in name.' }
 if ($manifest.RevitAddIns.AddIn.FullClassName -ne 'ViewFilterManager.Addin.Application') { throw 'Incorrect registration class.' }
-if ($manifest.RevitAddIns.AddIn.Assembly -ne (Join-Path $TestRoot ('Addins\ViewFilterManager\Versions\' + $version + '\TPTViewFilterManager.dll'))) { throw 'Incorrect registered assembly path.' }
+if ($manifest.RevitAddIns.AddIn.Assembly -ne (Join-Path $TestRoot ('Addins\ViewFilterManager\Versions\' + $version + '\ViewFilterManager.Addin.dll'))) { throw 'Incorrect registered assembly path.' }
 $count = 0
 foreach ($file in Get-ChildItem -LiteralPath $payload -File -Recurse) {
  $relative = $file.FullName.Substring($payload.Length).TrimStart('\')
@@ -35,7 +36,7 @@ foreach ($file in Get-ChildItem -LiteralPath $payload -File -Recurse) {
  $count++
 }
 $bootstrap = Join-Path $TestRoot ('Addins\ViewFilterManager\Versions\' + $version)
-if ((Get-FileHash -LiteralPath (Join-Path $bootstrap 'TPTViewFilterManager.dll')).Hash -ne (Get-FileHash -LiteralPath (Join-Path $payload 'TPTViewFilterManager.dll')).Hash) { throw 'Bootstrap DLL mismatch.' }
+if ((Get-FileHash -LiteralPath (Join-Path $bootstrap 'ViewFilterManager.Addin.dll')).Hash -ne (Get-FileHash -LiteralPath (Join-Path $payload 'ViewFilterManager.Addin.dll')).Hash) { throw 'Bootstrap DLL mismatch.' }
 if (Test-Path -LiteralPath (Join-Path $bootstrap 'runtime-location.txt')) { throw 'New installs must not contain a runtime pointer.' }
 if (-not (Test-Path -LiteralPath (Join-Path $bootstrap 'ViewFilterManager.Runtime.dll'))) { throw 'Colocated runtime missing.' }
 $null = Invoke-Checked $installer ($baseArguments + ' /LOG="' + (Join-Path $TestRoot 'repair.log') + '"')
@@ -47,7 +48,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Upgrade fixture compile failed.' }
 $upgrade = Join-Path $TestRoot ('ViewFilterManager-' + $next + '-Installer-Test.exe')
 $null = Invoke-Checked $upgrade ($baseArguments + ' /LOG="' + (Join-Path $TestRoot 'upgrade.log') + '"')
 if ((Get-Content -LiteralPath (Join-Path $TestRoot 'App\installed-version.txt') -Raw).Trim() -ne $next) { throw 'Upgrade record not updated.' }
-if (-not (Test-Path -LiteralPath (Join-Path $installed 'TPTViewFilterManager.dll'))) { throw 'Previous version was not preserved.' }
+if (-not (Test-Path -LiteralPath (Join-Path $installed 'ViewFilterManager.Addin.dll'))) { throw 'Previous version was not preserved.' }
 $upgradedManifest = [IO.File]::ReadAllText($manifestPath)
 if ($upgradedManifest -notlike ('*Versions\' + $next + '*')) { throw 'Upgrade did not switch manifest.' }
 $null = Invoke-Checked $installer ($baseArguments + ' /LOG="' + (Join-Path $TestRoot 'downgrade.log') + '"') $false
@@ -55,7 +56,7 @@ if ([IO.File]::ReadAllText($manifestPath) -ne $upgradedManifest) { throw 'Blocke
 $uninstaller = Join-Path $TestRoot 'App\Setup\unins000.exe'
 $null = Invoke-Checked $uninstaller ($baseArguments + ' /LOG="' + (Join-Path $TestRoot 'uninstall.log') + '"')
 if (Test-Path -LiteralPath $manifestPath) { throw 'Registration remains after uninstall.' }
-if (Test-Path -LiteralPath (Join-Path $installed 'TPTViewFilterManager.dll')) { throw 'Payload remains after uninstall.' }
-if (Test-Path -LiteralPath (Join-Path $TestRoot ('Addins\ViewFilterManager\Versions\' + $next + '\TPTViewFilterManager.dll'))) { throw 'Upgrade payload remains after uninstall.' }
-if (Test-Path -LiteralPath (Join-Path $bootstrap 'TPTViewFilterManager.dll')) { throw 'Bootstrap remains after uninstall.' }
+if (Test-Path -LiteralPath (Join-Path $installed 'ViewFilterManager.Addin.dll')) { throw 'Payload remains after uninstall.' }
+if (Test-Path -LiteralPath (Join-Path $TestRoot ('Addins\ViewFilterManager\Versions\' + $next + '\ViewFilterManager.Addin.dll'))) { throw 'Upgrade payload remains after uninstall.' }
+if (Test-Path -LiteralPath (Join-Path $bootstrap 'ViewFilterManager.Addin.dll')) { throw 'Bootstrap remains after uninstall.' }
 Write-Output "Installer checks passed: foreign registration refusal, $count verified files, install, repair, upgrade, downgrade refusal, uninstall."

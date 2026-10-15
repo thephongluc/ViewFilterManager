@@ -3,6 +3,7 @@ import clr
 clr.AddReference('PresentationFramework')
 clr.AddReference('PresentationCore')
 clr.AddReference('WindowsBase')
+clr.AddReference('System.Private.Uri')
 import wpf
 from System import Object
 from System.Collections.ObjectModel import ObservableCollection
@@ -16,6 +17,10 @@ Reactive = ReactiveObject
 class WPFWindow(Window):
     def __init__(self, path):
         wpf.LoadComponent(self, path)
+        import os
+        from System import Uri
+        from System.Windows.Media.Imaging import BitmapImage
+        self.Icon = BitmapImage(Uri(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'icon32.png')))
         Context.SetOwner(self)
         self.PreviewKeyDown += self._escape
     def _escape(self, sender, args):

@@ -1,7 +1,7 @@
 Installation complete.
 
 Start Revit 2026 and open a project. If Revit asks about the unsigned add-in, review its publisher and choose to load it.
-Open TPT > View Filter Manager > View Filter Manager.
+Open View Filter Manager ribbon tab > View Filter Manager.
 
 The Setup EXE installs the add-in; the manager itself runs inside Revit.
 Updates: https://github.com/thephongluc/ViewFilterManager/releases

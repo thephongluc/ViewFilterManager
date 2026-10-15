@@ -17,7 +17,7 @@ internal static class Program
   Directory.CreateDirectory(output);
   // Exercise the same private dependency load context used by the Revit command.
   var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
-  var addinPath = Path.Combine(content, "..", "src", "ViewFilterManager.Addin", "bin", configuration, "net8.0-windows", "TPTViewFilterManager.dll");
+  var addinPath = Path.Combine(content, "..", "src", "ViewFilterManager.Addin", "bin", configuration, "net8.0-windows", "ViewFilterManager.Addin.dll");
   var runtimePath = Path.Combine(content, "..", "src", "ViewFilterManager.Runtime", "bin", configuration, "net8.0-windows", "ViewFilterManager.Runtime.dll");
   var addin = Assembly.LoadFrom(Path.GetFullPath(addinPath));
   var contextType = addin.GetType("ViewFilterManager.Addin.RuntimeLoadContext", true)!;
@@ -26,11 +26,11 @@ internal static class Program
   var isolated = context.LoadFromAssemblyPath(Path.GetFullPath(runtimePath));
   // Verify the production root resolver itself, using an installed-layout fixture.
   var fixture = Path.Combine(output, "installed-layout"); Directory.CreateDirectory(fixture);
-  File.Copy(Path.GetFullPath(addinPath), Path.Combine(fixture,"TPTViewFilterManager.dll"), true);
+  File.Copy(Path.GetFullPath(addinPath), Path.Combine(fixture,"ViewFilterManager.Addin.dll"), true);
   File.Copy(Path.GetFullPath(runtimePath), Path.Combine(fixture,"ViewFilterManager.Runtime.dll"), true);
   var fixtureContext = (AssemblyLoadContext)Activator.CreateInstance(contextType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
       null, [Path.Combine(fixture,"ViewFilterManager.Runtime.dll")], null)!;
-  var fixtureAssembly = fixtureContext.LoadFromAssemblyPath(Path.Combine(fixture,"TPTViewFilterManager.dll"));
+  var fixtureAssembly = fixtureContext.LoadFromAssemblyPath(Path.Combine(fixture,"ViewFilterManager.Addin.dll"));
   var installation = fixtureAssembly.GetType("ViewFilterManager.Addin.Installation", true)!;
   var resolved = (string)installation.GetProperty("Root", BindingFlags.Static | BindingFlags.Public)!.GetValue(null)!;
   if (resolved != fixture) throw new InvalidOperationException("Installed-layout runtime resolution failed.");

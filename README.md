@@ -1,10 +1,10 @@
-# TPT View Filter Manager
+# View Filter Manager
 
-Standalone Windows add-in for **Autodesk Revit 2026**, preserving the workflows of the TPT pyRevit View Filter Manager v1.2.1. Current standalone version: **2.0.2**.
+Standalone Windows add-in for **Autodesk Revit 2026**, preserving the workflows of the TPT pyRevit View Filter Manager v1.2.1. Current standalone version: **2.0.3**.
 
 ## Install
 
-Download the versioned **Revit2026-Setup.exe** from [Releases](https://github.com/thephongluc/ViewFilterManager/releases). Save and close Revit, run setup under your normal Windows account, then restart Revit and open a project. Use the dedicated **View Filter Manager** ribbon tab → **View Filter Manager** button.
+Download the versioned **Revit2026-Setup.exe** from [Releases](https://github.com/thephongluc/ViewFilterManager/releases). Save and close Revit, run setup under your normal Windows account, then restart Revit and open a project. Use the dedicated **View Filter Manager** ribbon tab â†’ **View Filter Manager** button.
 
 The EXE is the installer; editing models happens inside Revit. There is no dependency on pyRevit or a separately installed Python. Windows x64 and Revit 2026 are required. This release builds against the Revit 2026 API/.NET 8 and has been checked locally against 2026.4; newer Revit runtime transitions require separate live acceptance testing.
 
@@ -12,7 +12,7 @@ The unsigned first release can trigger Windows/Revit publisher prompts. Verify t
 
 Setup registers the current user in `%APPDATA%\Autodesk\Revit\Addins\2026\ViewFilterManager.addin`. The **complete add-in**, including its startup DLL, runtime, standard library and Content folder, is installed together under `%APPDATA%\Autodesk\Revit\Addins\2026\ViewFilterManager\Versions\<version>`. No runtime pointer or cross-folder DLL lookup is needed.
 
-The installer/uninstaller and version record remain at `%LOCALAPPDATA%\TPT\ViewFilterManager` to preserve the existing Windows app identity. Updates require Revit to be closed and block accidental downgrade. Earlier installed files remain tracked for uninstall. Rerun setup to repair; remove the app through Settings → Apps. Logs outside version folders can remain for diagnostics.
+The installer/uninstaller and version record remain at `%LOCALAPPDATA%\TPT\ViewFilterManager` to preserve the existing Windows app identity. Updates require Revit to be closed and block accidental downgrade. Earlier installed files remain tracked for uninstall. Rerun setup to repair; remove the app through Settings â†’ Apps. Logs outside version folders can remain for diagnostics.
 
 Your old pyRevit tool remains unchanged and may coexist. This add-in uses its own **View Filter Manager** ribbon tab, separate from TPT and pyRevit. Revit models and user-created TXT/JSON/CSV files are never installed over or removed.
 
