@@ -3,6 +3,7 @@ $ErrorActionPreference = 'Stop'
 $env:MSBuildEnableWorkloadResolver = 'false'
 $env:DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE = 'true'
 $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+$env:PYTHONDONTWRITEBYTECODE = '1'
 $root = if ($ProjectRoot) { [IO.Path]::GetFullPath($ProjectRoot) } else { Split-Path -Parent $PSScriptRoot }
 $version = (Get-Content -LiteralPath (Join-Path $root 'VERSION') -Raw).Trim()
 if ($version -notmatch '^\d+\.\d+\.\d+$') { throw 'VERSION must be MAJOR.MINOR.PATCH.' }
@@ -21,7 +22,15 @@ New-Item -ItemType Directory -Force -Path $stage | Out-Null
 $runtimeBin = Join-Path $root ('src\ViewFilterManager.Runtime\bin\' + $Configuration + '\net8.0-windows')
 Copy-Item -Path (Join-Path $runtimeBin '*') -Destination $stage -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $root ('src\ViewFilterManager.Addin\bin\' + $Configuration + '\net8.0-windows\ViewFilterManager.Addin.dll')) -Destination $stage -Force
-Copy-Item -LiteralPath (Join-Path $root 'runtime') -Destination (Join-Path $stage 'Content') -Recurse -Force
+$contentSource = Join-Path $root 'runtime'
+$contentStage = Join-Path $stage 'Content'
+foreach ($file in Get-ChildItem -LiteralPath $contentSource -File -Recurse) {
+    if ($file.FullName -match '\\__pycache__\\' -or $file.Extension -eq '.pyc') { continue }
+    $relative = $file.FullName.Substring($contentSource.Length).TrimStart('\')
+    $target = Join-Path $contentStage $relative
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $target) | Out-Null
+    Copy-Item -LiteralPath $file.FullName -Destination $target -Force
+}
 foreach ($name in @('README.md','CHANGELOG.md','THIRD-PARTY-NOTICES.md','VERSION')) { Copy-Item -LiteralPath (Join-Path $root $name) -Destination $stage -Force }
 Copy-Item -LiteralPath (Join-Path $root 'licenses') -Destination $stage -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $root 'docs') -Destination $stage -Recurse -Force
