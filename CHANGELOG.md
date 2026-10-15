@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.1 — 2026-10-15
+
+- Fix Revit startup reporting the installed assembly as missing.
+- Register `TPTViewFilterManager.dll` in Revit's standard current-user add-ins folder, with a pointer to the versioned runtime payload.
+- Keep existing runtime/upgrade/uninstall locations and stable product IDs.
+- Verify bootstrap registration and runtime pointer in installer lifecycle tests.
+- Confirm actual Revit 2026.4 startup and ribbon registration through its startup journal; native model operations remain separately pending.
+
 ## 2.0.0 — 2026-10-15
 
 - First standalone Revit 2026 add-in, migrated from the TPT pyRevit View Filter Manager 1.2.1.

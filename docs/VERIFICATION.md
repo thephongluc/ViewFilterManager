@@ -1,4 +1,13 @@
-# Release 2.0.0 verification — 2026-10-15
+# Release 2.0.1 verification — 2026-10-15
+
+- Fixes a startup rejection observed in the original 2.0.0 local registration despite the DLL existing on disk.
+- Installs `TPTViewFilterManager.dll` in the standard current-user Revit add-ins directory. A UTF-8 runtime pointer locates the existing LocalAppData versioned payload.
+- Actual Revit 2026.4 startup confirmed for the installed 2.0.1 patch: journal.0183.txt records `Starting External Application: TPT View Filter Manager`, assembly version `2.0.1.0`, creation of `TPT.Standalone.ViewFilterManager`, and add-in load result `NoError`.
+- No project was opened or modified in the startup test. Model editing/transfer acceptance remains pending.
+- All 82 offline regression tests and the embedded WPF/private dependency-context tests pass.
+- Installer lifecycle checks pass with the bootstrap location and runtime-pointer validation, including repair, upgrade, downgrade refusal and uninstall.
+
+# Original standalone verification
 
 - Both .NET 8 x64 projects compile with zero warnings/errors against installed Revit 2026.4 references.
 - The add-in entry point also compiles with zero warnings/errors using pinned reference-only NuGet API packages, matching the GitHub-hosted build path.

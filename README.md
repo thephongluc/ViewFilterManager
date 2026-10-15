@@ -1,6 +1,6 @@
 # TPT View Filter Manager
 
-Standalone Windows add-in for **Autodesk Revit 2026**, preserving the workflows of the TPT pyRevit View Filter Manager v1.2.1. Current standalone version: **2.0.0**.
+Standalone Windows add-in for **Autodesk Revit 2026**, preserving the workflows of the TPT pyRevit View Filter Manager v1.2.1. Current standalone version: **2.0.1**.
 
 ## Install
 
@@ -10,7 +10,7 @@ The EXE is the installer; editing models happens inside Revit. There is no depen
 
 The unsigned first release can trigger Windows/Revit publisher prompts. Verify the release SHA-256 checksum before installation. No automatic updater downloads or executes code; install newer versioned releases yourself.
 
-Setup registers the current user in `%APPDATA%\Autodesk\Revit\Addins\2026\ViewFilterManager.addin`, and places each version in `%LOCALAPPDATA%\TPT\ViewFilterManager\Versions\<version>`. Updating requires Revit to be closed, preserves earlier version files and blocks accidental downgrade. The stable Windows app entry supports repair by rerunning setup and uninstall through Settings → Apps. Uninstall removes registered product files, while logs outside version folders can remain for diagnostics.
+Setup registers the current user in `%APPDATA%\Autodesk\Revit\Addins\2026\ViewFilterManager.addin`, and places each version in `%LOCALAPPDATA%\TPT\ViewFilterManager\Versions\<version>`. A small startup DLL and runtime-location pointer are registered under `%APPDATA%\Autodesk\Revit\Addins\2026\ViewFilterManager\Versions\<version>`. This standard bootstrap location fixes the 2.0.0 startup rejection. Updating requires Revit to be closed, preserves earlier version files and blocks accidental downgrade. The stable Windows app entry supports repair by rerunning setup and uninstall through Settings → Apps. Uninstall removes registered product files, while logs outside version folders can remain for diagnostics.
 
 Your old pyRevit tool remains unchanged and may coexist. Its panel is **View Filters**; this add-in uses the separate **View Filter Manager** panel. Revit models and user-created TXT/JSON/CSV files are never installed over or removed.
 
@@ -45,6 +45,6 @@ The single `VERSION` file drives .NET assembly/file versions, Python UI version,
 
 A compiled .NET external application registers the ribbon and invokes a private assembly-load context. A dedicated embedded IronPython 3.4.2 runtime hosts the migrated Python filter logic. An independently implemented WPF forms layer replaces every pyRevit dependency. Scripting assemblies are isolated from other add-ins; Revit and WPF assemblies stay shared with the host.
 
-82 offline regression checks exercise filter operations through API mocks. The standalone engine harness additionally loads real WPF windows with their event handlers, verifies two-way property binding and literal labels, and renders previews. These checks do not establish native Revit model behavior. **Live Revit model acceptance is pending.** Installer lifecycle tests are recorded separately in docs/VERIFICATION.md.
+82 offline regression checks exercise filter operations through API mocks. The standalone engine harness additionally loads real WPF windows with their event handlers, verifies two-way property binding and literal labels, and renders previews. These checks do not establish native Revit model behavior. **Actual Revit 2026.4 startup and ribbon registration are verified for 2.0.1. Live model editing/transfer acceptance is pending.** Installer lifecycle tests are recorded separately in docs/VERIFICATION.md.
 
 Errors opening the tool are written to `%LOCALAPPDATA%\TPT\ViewFilterManager\Logs\last-error.txt`. Reports can be saved from the UI. No telemetry is sent.

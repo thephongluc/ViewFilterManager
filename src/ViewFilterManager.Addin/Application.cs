@@ -22,7 +22,7 @@ public sealed class Application : IExternalApplication
         button.AvailabilityClassName = typeof(ProjectAvailability).FullName;
         button.ToolTip = "View Filter Manager " + typeof(Application).Assembly.GetName().Version!.ToString(3) +
                          " — copy, order, edit, rename and transfer view filters.";
-        var icon = Path.Combine(Path.GetDirectoryName(typeof(Application).Assembly.Location)!, "Content", "icon.png");
+        var icon = Path.Combine(Installation.Root, "Content", "icon.png");
         if (File.Exists(icon)) { var image = new BitmapImage(new Uri(icon)); image.Freeze(); button.LargeImage = image; button.Image = image; }
         return Result.Succeeded;
     }
@@ -47,7 +47,7 @@ public sealed class Command : IExternalCommand
         { TaskDialog.Show("View Filter Manager", "Open a Revit project first."); return Result.Cancelled; }
         try
         {
-            var folder = Path.GetDirectoryName(typeof(Command).Assembly.Location)!;
+            var folder = Installation.Root;
             if (run is null)
             {
                 context = new RuntimeLoadContext(Path.Combine(folder, "ViewFilterManager.Runtime.dll"));
@@ -65,6 +65,25 @@ public sealed class Command : IExternalCommand
             message = error.Message;
             TaskDialog.Show("View Filter Manager", "Unable to open the manager.\n\n" + error.Message + "\n\nDetails: " + Path.Combine(log, "last-error.txt"));
             return Result.Failed;
+        }
+    }
+}
+
+// The startup DLL is registered in Revit's standard add-ins directory.
+// A small installed pointer locates the versioned runtime payload; portable builds
+// without the pointer continue to resolve dependencies beside their entry DLL.
+internal static class Installation
+{
+    public static string Root
+    {
+        get
+        {
+            var bootstrap = Path.GetDirectoryName(typeof(Application).Assembly.Location)!;
+            var pointer = Path.Combine(bootstrap, "runtime-location.txt");
+            var root = File.Exists(pointer) ? Path.GetFullPath(File.ReadAllText(pointer).Trim()) : bootstrap;
+            if (!File.Exists(Path.Combine(root, "ViewFilterManager.Runtime.dll")))
+                throw new FileNotFoundException("View Filter Manager runtime is missing. Run the installer to repair it.", root);
+            return root;
         }
     }
 }

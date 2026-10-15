@@ -50,6 +50,8 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
 [Files]
 Source: "{#PayloadDir}\*"; DestDir: "{app}\Versions\{#AppVersion}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#PayloadDir}\TPTViewFilterManager.dll"; DestDir: "{code:GetBootstrapDir}"; Flags: ignoreversion
+Source: "{tmp}\ViewFilterManager-runtime-location.txt"; DestDir: "{code:GetBootstrapDir}"; DestName: "runtime-location.txt"; Flags: external ignoreversion
 Source: "{tmp}\ViewFilterManager.addin"; DestDir: "{code:GetAddinsRoot}"; Flags: external ignoreversion
 Source: "{tmp}\ViewFilterManager-version.txt"; DestDir: "{app}"; DestName: "installed-version.txt"; Flags: external ignoreversion
 
@@ -70,6 +72,10 @@ begin
 #else
  Result := ExpandConstant('{localappdata}\TPT\ViewFilterManager');
 #endif
+end;
+function GetBootstrapDir(Param: String): String;
+begin
+ Result := GetAddinsRoot('') + '\ViewFilterManager\Versions\{#AppVersion}';
 end;
 function RevitRunning: Boolean;
 var Locator, Services, Processes: Variant;
@@ -157,7 +163,7 @@ begin
   if CompareVersions(String(Previous), '{#AppVersion}') > 0 then begin
    Result := 'A newer version is installed. Uninstall it before installing an older version.'; exit;
   end;
- AssemblyPath := ExpandConstant('{app}\Versions\{#AppVersion}\ViewFilterManager.Addin.dll');
+ AssemblyPath := GetBootstrapDir('') + '\TPTViewFilterManager.dll';
  Manifest := '<?xml version="1.0" encoding="utf-8"?>' + #13#10 +
  '<RevitAddIns><AddIn Type="Application"><Name>TPT View Filter Manager</Name><Assembly>' + XmlEscape(AssemblyPath) +
  '</Assembly><AddInId>C5B839AD-C5B7-4C67-A0FA-9F843AE927B3</AddInId>' +
@@ -166,6 +172,10 @@ begin
  SetArrayLength(Lines, 1); Lines[0] := Manifest;
  if not SaveStringsToUTF8File(ExpandConstant('{tmp}\ViewFilterManager.addin'), Lines, False) then begin
   Result := 'Unable to prepare the Revit registration file.'; exit;
+ end;
+ Lines[0] := ExpandConstant('{app}\Versions\{#AppVersion}');
+ if not SaveStringsToUTF8File(ExpandConstant('{tmp}\ViewFilterManager-runtime-location.txt'), Lines, False) then begin
+  Result := 'Unable to prepare the runtime location record.'; exit;
  end;
  Lines[0] := '{#AppVersion}';
  if not SaveStringToFile(ExpandConstant('{tmp}\ViewFilterManager-version.txt'), '{#AppVersion}', False) then

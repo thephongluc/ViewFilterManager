@@ -21,7 +21,7 @@ if (Test-Path -LiteralPath $stage) { Remove-Item -LiteralPath $stage -Recurse -F
 New-Item -ItemType Directory -Force -Path $stage | Out-Null
 $runtimeBin = Join-Path $root ('src\ViewFilterManager.Runtime\bin\' + $Configuration + '\net8.0-windows')
 Copy-Item -Path (Join-Path $runtimeBin '*') -Destination $stage -Recurse -Force
-Copy-Item -LiteralPath (Join-Path $root ('src\ViewFilterManager.Addin\bin\' + $Configuration + '\net8.0-windows\ViewFilterManager.Addin.dll')) -Destination $stage -Force
+Copy-Item -LiteralPath (Join-Path $root ('src\ViewFilterManager.Addin\bin\' + $Configuration + '\net8.0-windows\TPTViewFilterManager.dll')) -Destination $stage -Force
 $contentSource = Join-Path $root 'runtime'
 $contentStage = Join-Path $stage 'Content'
 foreach ($file in Get-ChildItem -LiteralPath $contentSource -File -Recurse) {

@@ -17,7 +17,7 @@ internal static class Program
   Directory.CreateDirectory(output);
   // Exercise the same private dependency load context used by the Revit command.
   var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
-  var addinPath = Path.Combine(content, "..", "src", "ViewFilterManager.Addin", "bin", configuration, "net8.0-windows", "ViewFilterManager.Addin.dll");
+  var addinPath = Path.Combine(content, "..", "src", "ViewFilterManager.Addin", "bin", configuration, "net8.0-windows", "TPTViewFilterManager.dll");
   var runtimePath = Path.Combine(content, "..", "src", "ViewFilterManager.Runtime", "bin", configuration, "net8.0-windows", "ViewFilterManager.Runtime.dll");
   var addin = Assembly.LoadFrom(Path.GetFullPath(addinPath));
   var contextType = addin.GetType("ViewFilterManager.Addin.RuntimeLoadContext", true)!;
