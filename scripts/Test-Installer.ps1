@@ -23,7 +23,7 @@ $null = Invoke-Checked $installer ($baseArguments + ' /LOG="' + (Join-Path $Test
 if ([IO.File]::ReadAllText($manifestPath) -ne '<foreign-application/>') { throw 'Foreign registration was modified.' }
 Remove-Item -LiteralPath $manifestPath
 $null = Invoke-Checked $installer ($baseArguments + ' /LOG="' + (Join-Path $TestRoot 'install.log') + '"')
-$installed = Join-Path $TestRoot ('App\Versions\' + $version)
+$installed = Join-Path $TestRoot ('Addins\ViewFilterManager\Versions\' + $version)
 $manifest = [xml](Get-Content -LiteralPath $manifestPath -Raw)
 if ($manifest.RevitAddIns.AddIn.FullClassName -ne 'ViewFilterManager.Addin.Application') { throw 'Incorrect registration class.' }
 if ($manifest.RevitAddIns.AddIn.Assembly -ne (Join-Path $TestRoot ('Addins\ViewFilterManager\Versions\' + $version + '\TPTViewFilterManager.dll'))) { throw 'Incorrect registered assembly path.' }
@@ -36,7 +36,8 @@ foreach ($file in Get-ChildItem -LiteralPath $payload -File -Recurse) {
 }
 $bootstrap = Join-Path $TestRoot ('Addins\ViewFilterManager\Versions\' + $version)
 if ((Get-FileHash -LiteralPath (Join-Path $bootstrap 'TPTViewFilterManager.dll')).Hash -ne (Get-FileHash -LiteralPath (Join-Path $payload 'TPTViewFilterManager.dll')).Hash) { throw 'Bootstrap DLL mismatch.' }
-if ((Get-Content -LiteralPath (Join-Path $bootstrap 'runtime-location.txt') -Raw).Trim() -ne $installed) { throw 'Runtime pointer mismatch.' }
+if (Test-Path -LiteralPath (Join-Path $bootstrap 'runtime-location.txt')) { throw 'New installs must not contain a runtime pointer.' }
+if (-not (Test-Path -LiteralPath (Join-Path $bootstrap 'ViewFilterManager.Runtime.dll'))) { throw 'Colocated runtime missing.' }
 $null = Invoke-Checked $installer ($baseArguments + ' /LOG="' + (Join-Path $TestRoot 'repair.log') + '"')
 # Fixture-only installer validates the upgrade mechanism using the same known payload.
 $parsed = [version]$version
@@ -55,6 +56,6 @@ $uninstaller = Join-Path $TestRoot 'App\Setup\unins000.exe'
 $null = Invoke-Checked $uninstaller ($baseArguments + ' /LOG="' + (Join-Path $TestRoot 'uninstall.log') + '"')
 if (Test-Path -LiteralPath $manifestPath) { throw 'Registration remains after uninstall.' }
 if (Test-Path -LiteralPath (Join-Path $installed 'TPTViewFilterManager.dll')) { throw 'Payload remains after uninstall.' }
-if (Test-Path -LiteralPath (Join-Path $TestRoot ('App\Versions\' + $next + '\TPTViewFilterManager.dll'))) { throw 'Upgrade payload remains after uninstall.' }
+if (Test-Path -LiteralPath (Join-Path $TestRoot ('Addins\ViewFilterManager\Versions\' + $next + '\TPTViewFilterManager.dll'))) { throw 'Upgrade payload remains after uninstall.' }
 if (Test-Path -LiteralPath (Join-Path $bootstrap 'TPTViewFilterManager.dll')) { throw 'Bootstrap remains after uninstall.' }
 Write-Output "Installer checks passed: foreign registration refusal, $count verified files, install, repair, upgrade, downgrade refusal, uninstall."

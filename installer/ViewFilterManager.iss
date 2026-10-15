@@ -49,9 +49,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
 [Files]
-Source: "{#PayloadDir}\*"; DestDir: "{app}\Versions\{#AppVersion}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#PayloadDir}\TPTViewFilterManager.dll"; DestDir: "{code:GetBootstrapDir}"; Flags: ignoreversion
-Source: "{tmp}\ViewFilterManager-runtime-location.txt"; DestDir: "{code:GetBootstrapDir}"; DestName: "runtime-location.txt"; Flags: external ignoreversion
+Source: "{#PayloadDir}\*"; DestDir: "{code:GetBootstrapDir}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{tmp}\ViewFilterManager.addin"; DestDir: "{code:GetAddinsRoot}"; Flags: external ignoreversion
 Source: "{tmp}\ViewFilterManager-version.txt"; DestDir: "{app}"; DestName: "installed-version.txt"; Flags: external ignoreversion
 
@@ -172,10 +170,6 @@ begin
  SetArrayLength(Lines, 1); Lines[0] := Manifest;
  if not SaveStringsToUTF8File(ExpandConstant('{tmp}\ViewFilterManager.addin'), Lines, False) then begin
   Result := 'Unable to prepare the Revit registration file.'; exit;
- end;
- Lines[0] := ExpandConstant('{app}\Versions\{#AppVersion}');
- if not SaveStringsToUTF8File(ExpandConstant('{tmp}\ViewFilterManager-runtime-location.txt'), Lines, False) then begin
-  Result := 'Unable to prepare the runtime location record.'; exit;
  end;
  Lines[0] := '{#AppVersion}';
  if not SaveStringToFile(ExpandConstant('{tmp}\ViewFilterManager-version.txt'), '{#AppVersion}', False) then

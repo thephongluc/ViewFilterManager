@@ -1,6 +1,6 @@
 # Detailed workflows
 
-Migrated from pyRevit v1.2.1; launch from the standalone TPT View Filter Manager panel.
+Migrated from pyRevit v1.2.1; launch from the dedicated View Filter Manager ribbon tab → View Filter Manager button.
 
 ## Whole-word matching in 1.2.1
 

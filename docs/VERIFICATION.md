@@ -1,4 +1,11 @@
-# Release 2.0.1 verification — 2026-10-15
+# Release 2.0.2 verification — 2026-10-15
+
+- The complete startup DLL, runtime, dependencies and Content now install together in the standard Revit add-ins version folder. New installations have no runtime pointer.
+- Production Installation.Root is invoked in the .NET harness against a physical installed-layout fixture; the resolved runtime path must match its containing folder.
+- Installer lifecycle checks verify the colocated runtime and absence of a location pointer, plus repair/upgrade/downgrade refusal/uninstall.
+- Normal desktop Revit 2026.4 startup journal.0185.txt confirms version 2.0.2.0 loaded with NoError and registered its command after the runtime layout fix. No project was opened or modified. The subsequent dedicated ribbon tab change requires visual acceptance after restart. Native model operations remain separately pending.
+
+# Previous 2.0.1 checks (superseded layout)
 
 - Fixes a startup rejection observed in the original 2.0.0 local registration despite the DLL existing on disk.
 - Installs `TPTViewFilterManager.dll` in the standard current-user Revit add-ins directory. A UTF-8 runtime pointer locates the existing LocalAppData versioned payload.

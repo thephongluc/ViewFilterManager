@@ -126,5 +126,5 @@ build, add-in version and embedded IronPython engine, and attach any saved repor
 ## 2.0.1 startup repair evidence
 
 - [x] Real Revit 2026.4 startup loads the standard-directory bootstrap and reports version 2.0.1.0 with NoError.
-- [x] The standalone ribbon button is registered in TPT → View Filter Manager.
+- [ ] The standalone ribbon button appears on its dedicated View Filter Manager tab (updated in 2.0.2; visual acceptance pending).
 - [ ] Validate opening the manager and native model workflows in a disposable project.

@@ -13,7 +13,7 @@ public sealed class Application : IExternalApplication
     public Result OnStartup(UIControlledApplication app)
     {
         if (app.ControlledApplication.VersionNumber != "2026") return Result.Failed;
-        const string tab = "TPT";
+        const string tab = "View Filter Manager";
         try { app.CreateRibbonTab(tab); } catch (Autodesk.Revit.Exceptions.ArgumentException) { }
         var panel = app.GetRibbonPanels(tab).FirstOrDefault(p => p.Name == "View Filter Manager")
                     ?? app.CreateRibbonPanel(tab, "View Filter Manager");
@@ -69,20 +69,26 @@ public sealed class Command : IExternalCommand
     }
 }
 
-// The startup DLL is registered in Revit's standard add-ins directory.
-// A small installed pointer locates the versioned runtime payload; portable builds
-// without the pointer continue to resolve dependencies beside their entry DLL.
+// Keep the complete runtime beside its startup DLL. Legacy pointer installs
+// remain readable, but new installers use the colocated path exclusively.
 internal static class Installation
 {
     public static string Root
     {
         get
         {
-            var bootstrap = Path.GetDirectoryName(typeof(Application).Assembly.Location)!;
+            var bootstrap = Path.GetDirectoryName(typeof(Installation).Assembly.Location)!;
+            var localRuntime = Path.Combine(bootstrap, "ViewFilterManager.Runtime.dll");
+            if (File.Exists(localRuntime)) return bootstrap;
             var pointer = Path.Combine(bootstrap, "runtime-location.txt");
             var root = File.Exists(pointer) ? Path.GetFullPath(File.ReadAllText(pointer).Trim()) : bootstrap;
-            if (!File.Exists(Path.Combine(root, "ViewFilterManager.Runtime.dll")))
-                throw new FileNotFoundException("View Filter Manager runtime is missing. Run the installer to repair it.", root);
+            var runtime = Path.Combine(root, "ViewFilterManager.Runtime.dll");
+            try { using var stream = File.OpenRead(runtime); }
+            catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+            {
+                throw new IOException("Unable to read the View Filter Manager runtime at " + runtime +
+                    ". Run the current installer with Revit closed to repair the installation.", error);
+            }
             return root;
         }
     }

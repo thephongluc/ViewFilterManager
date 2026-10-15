@@ -24,6 +24,17 @@ internal static class Program
   var context = (AssemblyLoadContext)Activator.CreateInstance(contextType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
       null, [Path.GetFullPath(runtimePath)], null)!;
   var isolated = context.LoadFromAssemblyPath(Path.GetFullPath(runtimePath));
+  // Verify the production root resolver itself, using an installed-layout fixture.
+  var fixture = Path.Combine(output, "installed-layout"); Directory.CreateDirectory(fixture);
+  File.Copy(Path.GetFullPath(addinPath), Path.Combine(fixture,"TPTViewFilterManager.dll"), true);
+  File.Copy(Path.GetFullPath(runtimePath), Path.Combine(fixture,"ViewFilterManager.Runtime.dll"), true);
+  var fixtureContext = (AssemblyLoadContext)Activator.CreateInstance(contextType, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+      null, [Path.Combine(fixture,"ViewFilterManager.Runtime.dll")], null)!;
+  var fixtureAssembly = fixtureContext.LoadFromAssemblyPath(Path.Combine(fixture,"TPTViewFilterManager.dll"));
+  var installation = fixtureAssembly.GetType("ViewFilterManager.Addin.Installation", true)!;
+  var resolved = (string)installation.GetProperty("Root", BindingFlags.Static | BindingFlags.Public)!.GetValue(null)!;
+  if (resolved != fixture) throw new InvalidOperationException("Installed-layout runtime resolution failed.");
+  Console.WriteLine("Production colocated runtime resolver passed.");
   var isolatedEngine = isolated.GetType("ViewFilterManager.Runtime.Entry", true)!.GetMethod("CreateEngine")!.Invoke(null, [content])!;
   // The engine type belongs to its private DLR assembly: invoke through reflection, not an incompatible cast.
   var isolatedScope = isolatedEngine.GetType().GetMethod("CreateScope", Type.EmptyTypes)!.Invoke(isolatedEngine, null)!;

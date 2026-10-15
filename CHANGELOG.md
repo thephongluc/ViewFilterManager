@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.2 — 2026-10-15
+
+- Move the standalone command to its own View Filter Manager ribbon tab, separate from TPT and pyRevit.
+- Install the complete runtime beside the startup DLL in Revit's standard add-ins directory.
+- Remove the runtime-location pointer from new installations, avoiding the split-folder lookup that failed in a desktop Revit session after the 2.0.1 bootstrap repair.
+- Validate the actual production runtime resolver against an installed-layout fixture.
+- Preserve the stable installer identity and upgrade/uninstall tracking.
+
 ## 2.0.1 — 2026-10-15
 
 - Fix Revit startup reporting the installed assembly as missing.
