@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF><PlatformTarget>x64</PlatformTarget><CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies></PropertyGroup><ItemGroup>
+ <PackageReference Include="IronPython" Version="3.4.2"/>
+ <PackageReference Include="IronPython.StdLib" Version="3.4.2" GeneratePathProperty="true"/>
+</ItemGroup>
+<Target Name="CopyPythonLibrary" AfterTargets="Build"><ItemGroup><PythonLibrary Include="$(PkgIronPython_StdLib)\content\Lib\**\*"/></ItemGroup><Copy SourceFiles="@(PythonLibrary)" DestinationFiles="@(PythonLibrary->'$(OutDir)Lib\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true"/></Target>
+</Project>

@@ -1,0 +1,6 @@
+TPT View Filter Manager for Revit 2026
+
+Save your work and close Revit before installing, updating or uninstalling.
+This is a standalone Revit add-in. Python and pyRevit do not need to be installed.
+The installer registers the add-in for your current Windows user only.
+Existing pyRevit tools and model files are not changed.

@@ -1,0 +1,33 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="View Filter Manager - Batch Rename" Width="1060" Height="700" MinWidth="850" MinHeight="540" Background="#F0F0F0" FontSize="12" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+ <Window.Resources>
+  <Style TargetType="Button"><Setter Property="Padding" Value="9,5"/><Setter Property="Margin" Value="3"/><Setter Property="MinHeight" Value="28"/></Style>
+  <Style TargetType="TextBox"><Setter Property="Padding" Value="4"/></Style>
+ </Window.Resources>
+ <Grid Margin="12">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <TextBlock Text="Batch Rename — Project View Filters" FontSize="18" Margin="0,0,0,10"/>
+  <Grid Grid.Row="1" Margin="0,0,0,8">
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+   <TextBlock Text="Find" VerticalAlignment="Center" Margin="0,0,8,5"/><TextBox Grid.Column="1" x:Name="rename_find" Margin="0,0,12,5"/>
+   <TextBlock Grid.Column="2" Text="Replace" VerticalAlignment="Center" Margin="0,0,8,5"/><TextBox Grid.Column="3" x:Name="rename_replace" Margin="0,0,12,5"/>
+   <StackPanel Grid.Column="4" VerticalAlignment="Center"><CheckBox x:Name="rename_match_case" Content="Match case" IsChecked="True" Margin="0,0,0,4"/><CheckBox x:Name="rename_whole_words" Content="Whole words only" IsChecked="True" ToolTip="Match complete words. Spaces, punctuation, hyphens and underscores separate words."/></StackPanel>
+   <TextBlock Grid.Row="1" Text="Prefix" VerticalAlignment="Center" Margin="0,0,8,0"/><TextBox Grid.Row="1" Grid.Column="1" x:Name="rename_prefix" Margin="0,0,12,0"/>
+   <TextBlock Grid.Row="1" Grid.Column="2" Text="Suffix" VerticalAlignment="Center" Margin="0,0,8,0"/><TextBox Grid.Row="1" Grid.Column="3" x:Name="rename_suffix" Margin="0,0,12,0"/>
+   <Button Grid.Row="1" Grid.Column="4" Content="Update Preview" Click="preview_click"/>
+  </Grid>
+  <TextBlock Grid.Row="2" Text="Check rows to rename. Ctrl-click toggles checks; Shift-click checks a range. Edit New name directly. Update Preview replaces manual edits on checked rows using original names." TextWrapping="Wrap" Margin="0,0,0,8"/>
+  <DataGrid Grid.Row="3" x:Name="rename_rows" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="True" CanUserReorderColumns="False" CanUserSortColumns="False" SelectionMode="Extended" SelectionUnit="FullRow" HeadersVisibility="Column" GridLinesVisibility="Horizontal">
+   <DataGrid.Columns>
+    <DataGridTemplateColumn Header="Check" Width="55"><DataGridTemplateColumn.CellTemplate><DataTemplate><CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewMouseLeftButtonDown="row_mouse_down" HorizontalAlignment="Center" VerticalAlignment="Center"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+    <DataGridTemplateColumn Header="Current name" Width="2*" MinWidth="170"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding OriginalName}" PreviewMouseLeftButtonDown="row_mouse_down" Padding="4,6" ToolTip="{Binding OriginalName}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+    <DataGridTemplateColumn Header="New name" Width="2*" MinWidth="170"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBox Text="{Binding ProposedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+    <DataGridTemplateColumn Header="Status" Width="2*" MinWidth="150"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text="{Binding Status}" Foreground="{Binding StatusBrush}" Padding="4,6" TextWrapping="Wrap"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+   </DataGrid.Columns>
+  </DataGrid>
+  <Grid Grid.Row="4" Margin="0,8,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+   <StackPanel><StackPanel Orientation="Horizontal"><Button Content="Check All" Click="all_click"/><Button Content="Check None" Click="none_click"/><Button Content="Reset Names" Click="reset_click"/></StackPanel><TextBlock x:Name="rename_count" Margin="3" TextWrapping="Wrap"/></StackPanel>
+   <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom"><Button Content="Cancel" Click="cancel_click"/><Button x:Name="rename_apply" Content="Apply Rename" Click="apply_click" IsEnabled="False"/></StackPanel>
+  </Grid>
+ </Grid>
+</Window>
